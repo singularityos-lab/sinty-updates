@@ -1,0 +1,8 @@
+{
+  "version": "v2",
+  "min_version": "v1",
+  "rootfs_url": "https://github.com/singularityos-lab/sinty-updates/releases/download/v2/rootfs.erofs",
+  "rootfs_hash": "7e1357078dce440fb40807e927b32ba8f2fde90037179ba9c7d1b10f841a73e3",
+  "kernelcache_url": "https://github.com/singularityos-lab/sinty-updates/releases/download/v2/kernelcache.efi",
+  "kernelcache_hash": "35f358564cd10278e126ff3a5d2517e40602084fc52bf6beef9515732d5211de"
+}
