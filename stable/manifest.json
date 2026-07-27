@@ -2,7 +2,12 @@
   "version": "v2",
   "min_version": "v1",
   "rootfs_url": "https://github.com/singularityos-lab/sinty-updates/releases/download/v2/rootfs.erofs",
-  "rootfs_hash": "7e1357078dce440fb40807e927b32ba8f2fde90037179ba9c7d1b10f841a73e3",
+  "rootfs_hash": "1af971770378a7c34349ce8b64f8959b68823a61142e61ea4363636ddb33e36e",
+  "rootfs_verity_hash": "cd248a89d91196e7d93a6a287064cf84c9811042c3c7e4256f7e0b74cbec0b7f",
+  "rootfs_hashtree_url": "https://github.com/singularityos-lab/sinty-updates/releases/download/v2/rootfs.hash",
+  "rootfs_hashtree_hash": "0d3d210d6b7d86a6109c90f82a27244fac7c19d0a1fea9c34f00084a1cebe323",
   "kernelcache_url": "https://github.com/singularityos-lab/sinty-updates/releases/download/v2/kernelcache.efi",
-  "kernelcache_hash": "35f358564cd10278e126ff3a5d2517e40602084fc52bf6beef9515732d5211de"
+  "kernelcache_hash": "6b3d86b977d3f0533c80622a71605311d222f9f131257afe427619f051c499aa",
+  "kernelcache_sig_url": "https://github.com/singularityos-lab/sinty-updates/releases/download/v2/kernelcache.efi.sig",
+  "kernelcache_sig_hash": "0124c3ebdfb7bbe8e625f64de6702c7fed14936fffdfbd992331ccb8ebf89bf6"
 }
