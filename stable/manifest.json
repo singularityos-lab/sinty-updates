@@ -1,13 +1,39 @@
 {
-  "version": "v2",
-  "min_version": "v1",
-  "rootfs_url": "https://github.com/singularityos-lab/sinty-updates/releases/download/v2/rootfs.erofs",
-  "rootfs_hash": "1af971770378a7c34349ce8b64f8959b68823a61142e61ea4363636ddb33e36e",
-  "rootfs_verity_hash": "cd248a89d91196e7d93a6a287064cf84c9811042c3c7e4256f7e0b74cbec0b7f",
-  "rootfs_hashtree_url": "https://github.com/singularityos-lab/sinty-updates/releases/download/v2/rootfs.hash",
-  "rootfs_hashtree_hash": "0d3d210d6b7d86a6109c90f82a27244fac7c19d0a1fea9c34f00084a1cebe323",
-  "kernelcache_url": "https://github.com/singularityos-lab/sinty-updates/releases/download/v2/kernelcache.efi",
-  "kernelcache_hash": "6b3d86b977d3f0533c80622a71605311d222f9f131257afe427619f051c499aa",
-  "kernelcache_sig_url": "https://github.com/singularityos-lab/sinty-updates/releases/download/v2/kernelcache.efi.sig",
-  "kernelcache_sig_hash": "0124c3ebdfb7bbe8e625f64de6702c7fed14936fffdfbd992331ccb8ebf89bf6"
+  "version": "v121",
+  "min_version": "v121",
+  "rootfs_url": "https://github.com/singularityos-lab/sinty-updates/releases/download/v121/rootfs.erofs",
+  "rootfs_hash": "43be35fe67af7bd8301baefd6e22b90dd3518031565c4b48ddc2a4d9c4a1f602",
+  "rootfs_verity_hash": "a089d6e4ba7a9c88549f225c5ca1705f4760d06e866beed29a9e83839486afe2",
+  "rootfs_hashtree_url": "https://github.com/singularityos-lab/sinty-updates/releases/download/v121/rootfs.hash",
+  "rootfs_hashtree_hash": "6fa514152b78a296d6297acb258bc8e09a869bea420d6182e34e8548d0cdeb2f",
+  "kernelcache_url": "https://github.com/singularityos-lab/sinty-updates/releases/download/v121/kernelcache.efi",
+  "kernelcache_hash": "6d39a0d48f7e31eff94f32a87d93d885b257a7922842ed4f43d01194827450db",
+  "kernelcache_sig_url": "https://github.com/singularityos-lab/sinty-updates/releases/download/v121/kernelcache.efi.sig",
+  "kernelcache_sig_hash": "732a31f14520843726b8083856718fc31886c01467f290f6325e091ac4bc35c3",
+  "firmware_bundles": [
+    {
+      "name": "amd",
+      "url": "https://github.com/singularityos-lab/sinty-updates/releases/download/v121/firmware-active-amd.img",
+      "hash": "2830e91141e9e303a5cada878d76a566f15ef7e3761d2d18a644829f117ca65f",
+      "verity_hash": "db6973a84f759e115f0963ef5db57f53add28e532bb50e613aa7eb19c97464d3",
+      "hashtree_url": "https://github.com/singularityos-lab/sinty-updates/releases/download/v121/firmware-active-amd.hash",
+      "hashtree_hash": "1f553171a3bd0a710ee74cf1255514a97ccb28443e67315bf2f6d70db30176f8",
+      "version": 1,
+      "chips": [
+        "amd"
+      ]
+    },
+    {
+      "name": "nvidia",
+      "url": "https://github.com/singularityos-lab/sinty-updates/releases/download/v121/firmware-active-nvidia.img",
+      "hash": "b0b7b84393fee690a007efa6578c7ca37d72cfa7dc7e58bb2f2d38a0a8311faf",
+      "verity_hash": "a561dfa5b0e063b341953bc10632b0bc30520b582f6ca3de6a97c2847ea8cfdf",
+      "hashtree_url": "https://github.com/singularityos-lab/sinty-updates/releases/download/v121/firmware-active-nvidia.hash",
+      "hashtree_hash": "9dc10ede91734598d4c7d6aad4a54321575d31cb4d3a5903a4f732c4336ddd66",
+      "version": 1,
+      "chips": [
+        "nvidia"
+      ]
+    }
+  ]
 }

@@ -7,6 +7,7 @@ set -eu
 
 ATOMLOOPS="${ATOMLOOPS:-$HOME/Projects/personal/AtomLoops}"
 SIGNING_KEY="${SIGNING_KEY:-$ATOMLOOPS/signing-v1.key}"
+SIGNING_CERT="${SIGNING_CERT:-$ATOMLOOPS/signing-cert-v1.json}"
 REPO_BASE="${REPO_BASE:-singularityos-lab/sinty-updates}"
 
 version="${1:?usage: publish.sh <version> <rootfs.erofs> <kernelcache.efi> [channel]}"
@@ -46,7 +47,7 @@ base="https://github.com/$REPO_BASE/releases/download/$version"
     --manifest "$here/$channel/manifest.json" --priv "$SIGNING_KEY" )
 
 # keep the (root-signed) signing cert alongside the manifest
-cp "$ATOMLOOPS/signing-cert-v1.json"     "$here/$channel/signing-cert.json"
-cp "$ATOMLOOPS/signing-cert-v1.json.sig" "$here/$channel/signing-cert.json.sig"
+cp "$SIGNING_CERT"     "$here/$channel/signing-cert.json"
+cp "$SIGNING_CERT.sig" "$here/$channel/signing-cert.json.sig"
 
 echo "published $channel/$version -- upload $rootfs $rootfs_ht $kc $kc_sig to the '$version' GitHub Release, then commit+push"
