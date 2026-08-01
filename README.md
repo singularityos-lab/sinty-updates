@@ -8,10 +8,14 @@ host; private keys never live here.
 ## Publish
 
 ```
-./publish.sh <version> <rootfs.erofs> <kernelcache.efi>
+PRODUCT_VERSION=26 PRODUCT_BUILD=26A011 \
+AMD_FIRMWARE_VERITY_HASH=<hash> NVIDIA_FIRMWARE_VERITY_HASH=<hash> \
+  ./publish.sh <version> <rootfs.erofs> <kernelcache.efi>
 ```
 
-Then upload the two artifacts to the `<version>` GitHub Release and push.
+Keep `firmware-active-{amd,nvidia}.{img,hash}` in the same directory as
+`<rootfs.erofs>`. Then upload the eight listed artifacts to the `<version>` GitHub
+Release and push.
 
 ## Artifact proxy
 
