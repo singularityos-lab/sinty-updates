@@ -1,14 +1,13 @@
 #!/bin/sh
 # publish.sh <version> <rootfs.erofs> <kernelcache.efi> [channel]
 # Regenerate + sign the update manifest for a release, then commit it. Artifacts go to the
-# matching GitHub Release (releases/download/<version>/...); this only publishes the signed
-# pointer. The ROOT key is never used here -- only the signing key.
+# matching GitHub Release through the artifact proxy; this only publishes the signed pointer.
+# The ROOT key is never used here -- only the signing key.
 set -eu
 
 ATOMLOOPS="${ATOMLOOPS:-$HOME/Projects/personal/AtomLoops}"
 SIGNING_KEY="${SIGNING_KEY:-$ATOMLOOPS/signing-v1.key}"
 SIGNING_CERT="${SIGNING_CERT:-$ATOMLOOPS/signing-cert-v1.json}"
-REPO_BASE="${REPO_BASE:-singularityos-lab/sinty-updates}"
 
 version="${1:?usage: publish.sh <version> <rootfs.erofs> <kernelcache.efi> [channel]}"
 rootfs="${2:?rootfs artifact required}"
@@ -33,7 +32,7 @@ min="${MIN_VERSION:-$version}"
 
 here="$(cd "$(dirname "$0")" && pwd)"
 mkdir -p "$here/$channel"
-base="https://github.com/$REPO_BASE/releases/download/$version"
+base="${ARTIFACT_BASE:-https://updates.sinty.dev/artifacts}/$version"
 
 ( cd "$ATOMLOOPS" && go run ./cmd/atom-sign manifest \
     --version "$version" --min-version "$min" \
