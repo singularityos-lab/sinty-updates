@@ -9,7 +9,7 @@
   "preview_urls": false,
   "routes": [
     {
-      "pattern": "updates.sinty.dev/artifacts/*",
+      "pattern": "https://updates.sinty.dev/artifacts/*",
       "zone_name": "sinty.dev"
     }
   ],
