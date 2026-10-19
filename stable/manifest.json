@@ -14,9 +14,9 @@
   "kernelcache_sig_url": "https://updates.sinty.dev/artifacts/v206/kernelcache.efi.sig",
   "kernelcache_sig_hash": "f0e43878f2272cfdbbc9b126a333e105324ad3a7c52e13331512e07f22146d47",
   "loader_version": 2,
-  "loader_url": "https://updates.sinty.dev/artifacts/v206/atom-loader-2.efi",
+  "loader_url": "https://github.com/singularityos-lab/sinty-updates/releases/download/v206/atom-loader-2.efi",
   "loader_hash": "60d896ec37a292081973f306bf20082e5f233bf290c3add7ca33dc88b213ef10",
-  "loader_sig_url": "https://updates.sinty.dev/artifacts/v206/atom-loader-2.efi.sig",
+  "loader_sig_url": "https://github.com/singularityos-lab/sinty-updates/releases/download/v206/atom-loader-2.efi.sig",
   "loader_sig_hash": "6a2d0eb1b310655c0b729d74448e1e29b769497b06c61530667a2044ab199fb1",
   "firmware_bundles": [
     {
