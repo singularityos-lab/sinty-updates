@@ -43,12 +43,23 @@ fi
 [ -f "$nvidia_firmware" ] || { echo "publish: missing NVIDIA firmware image $nvidia_firmware" >&2; exit 1; }
 [ -f "$nvidia_firmware_hash" ] || { echo "publish: missing NVIDIA firmware hash tree $nvidia_firmware_hash" >&2; exit 1; }
 min="${MIN_VERSION:-$version}"
+loader="${LOADER_IMG:-}"
+loader_sig="${LOADER_SIG:-$loader.sig}"
+if [ -n "$loader" ]; then
+    [ -f "$loader" ] || { echo "publish: missing boot loader $loader" >&2; exit 1; }
+    [ -f "$loader_sig" ] || { echo "publish: missing boot loader signature $loader_sig" >&2; exit 1; }
+fi
 
 here="$(cd "$(dirname "$0")" && pwd)"
 mkdir -p "$here/$channel"
 base="${ARTIFACT_BASE:-https://updates.sinty.dev/artifacts}/$version"
 
-( cd "$ATOMLOOPS" && go run ./cmd/atom-sign manifest \
+set --
+if [ -n "$loader" ]; then
+    set -- --loader "$loader" --loader-url "$base/$(basename "$loader")" \
+        --loader-sig "$loader_sig" --loader-sig-url "$base/$(basename "$loader_sig")"
+fi
+( cd "$ATOMLOOPS" && go run ./cmd/atom-sign manifest "$@" \
     --version "$version" --min-version "$min" \
     --product-name "$product_name" --product-version "$product_version" \
     --product-build "$product_build" \
@@ -67,4 +78,4 @@ base="${ARTIFACT_BASE:-https://updates.sinty.dev/artifacts}/$version"
 cp "$SIGNING_CERT"     "$here/$channel/signing-cert.json"
 cp "$SIGNING_CERT.sig" "$here/$channel/signing-cert.json.sig"
 
-echo "published $channel/$version -- upload $rootfs $rootfs_ht $kc $kc_sig $amd_firmware $amd_firmware_hash $nvidia_firmware $nvidia_firmware_hash to the '$version' GitHub Release, then commit+push"
+echo "published $channel/$version -- upload $rootfs $rootfs_ht $kc $kc_sig $amd_firmware $amd_firmware_hash $nvidia_firmware $nvidia_firmware_hash${loader:+ $loader $loader_sig} to the '$version' GitHub Release, then commit+push"
