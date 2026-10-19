@@ -40,6 +40,8 @@ test("rejects unknown paths, assets, versions, and query parameters", async () =
   const cases = [
     ["/other/v131/rootfs.erofs", 404],
     ["/artifacts/v131/unknown.img", 404],
+    ["/artifacts/v131/atom-loader-x.efi", 404],
+    ["/artifacts/v131/atom-loader-0.efi", 404],
     ["/artifacts/latest/rootfs.erofs", 404],
     ["/artifacts/v131/rootfs.erofs?source=other", 400],
   ];
@@ -191,4 +193,17 @@ test("hides upstream failures and cancels their bodies", { concurrency: false },
 
   assert.equal(response.status, 502);
   assert.equal(cancelled, true);
+});
+
+test("proxies a versioned boot loader and its signature", async (t) => {
+  const requested = [];
+  replaceFetch(t, async (url) => {
+    requested.push(String(url));
+    return requested.length % 2 ? redirect() : new Response("loader", { status: 200 });
+  });
+  for (const asset of ["atom-loader-2.efi", "atom-loader-2.efi.sig"]) {
+    const response = await handleRequest(new Request(`https://updates.sinty.dev/artifacts/v206/${asset}`));
+    assert.notEqual(response.status, 404);
+  }
+  assert.ok(requested.some((url) => url.endsWith("/v206/atom-loader-2.efi")));
 });

@@ -21,9 +21,11 @@ const FORWARDED_RESPONSE_HEADERS = [
   "last-modified",
 ];
 
+const LOADER_ASSET = /^atom-loader-[1-9][0-9]*\.efi(\.sig)?$/;
+
 function artifactFromPath(pathname) {
   const match = /^\/artifacts\/(v[1-9][0-9]*)\/([^/]+)$/.exec(pathname);
-  if (!match || !ALLOWED_ASSETS.has(match[2])) {
+  if (!match || !(ALLOWED_ASSETS.has(match[2]) || LOADER_ASSET.test(match[2]))) {
     return null;
   }
   return { version: match[1], asset: match[2] };

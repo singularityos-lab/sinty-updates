@@ -56,8 +56,9 @@ base="${ARTIFACT_BASE:-https://updates.sinty.dev/artifacts}/$version"
 
 set --
 if [ -n "$loader" ]; then
-    set -- --loader "$loader" --loader-url "$base/$(basename "$loader")" \
-        --loader-sig "$loader_sig" --loader-sig-url "$base/$(basename "$loader_sig")"
+    loader_base="${LOADER_BASE:-$base}"
+    set -- --loader "$loader" --loader-url "$loader_base/$(basename "$loader")" \
+        --loader-sig "$loader_sig" --loader-sig-url "$loader_base/$(basename "$loader_sig")"
 fi
 ( cd "$ATOMLOOPS" && go run ./cmd/atom-sign manifest "$@" \
     --version "$version" --min-version "$min" \
