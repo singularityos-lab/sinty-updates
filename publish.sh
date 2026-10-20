@@ -49,6 +49,13 @@ if [ -n "$loader" ]; then
     [ -f "$loader" ] || { echo "publish: missing boot loader $loader" >&2; exit 1; }
     [ -f "$loader_sig" ] || { echo "publish: missing boot loader signature $loader_sig" >&2; exit 1; }
 fi
+recovery="${RECOVERY_IMG:-}"
+recovery_sig="${RECOVERY_SIG:-$recovery.sig}"
+if [ -n "$recovery" ]; then
+    [ -f "$recovery" ] || { echo "publish: missing recovery image $recovery" >&2; exit 1; }
+    [ -f "$recovery_sig" ] || { echo "publish: missing recovery signature $recovery_sig" >&2; exit 1; }
+    [ -n "${RECOVERY_VERSION:-}" ] || { echo "publish: RECOVERY_VERSION required with RECOVERY_IMG" >&2; exit 1; }
+fi
 
 here="$(cd "$(dirname "$0")" && pwd)"
 mkdir -p "$here/$channel"
@@ -59,6 +66,12 @@ if [ -n "$loader" ]; then
     loader_base="${LOADER_BASE:-$base}"
     set -- --loader "$loader" --loader-url "$loader_base/$(basename "$loader")" \
         --loader-sig "$loader_sig" --loader-sig-url "$loader_base/$(basename "$loader_sig")"
+fi
+if [ -n "$recovery" ]; then
+    recovery_base="${RECOVERY_BASE:-https://github.com/singularityos-lab/sinty-updates/releases/download/$version}"
+    set -- "$@" --recovery "$recovery" --recovery-url "$recovery_base/$(basename "$recovery")" \
+        --recovery-sig "$recovery_sig" --recovery-sig-url "$recovery_base/$(basename "$recovery_sig")" \
+        --recovery-version "$RECOVERY_VERSION"
 fi
 ( cd "$ATOMLOOPS" && go run ./cmd/atom-sign manifest "$@" \
     --version "$version" --min-version "$min" \
@@ -79,4 +92,4 @@ fi
 cp "$SIGNING_CERT"     "$here/$channel/signing-cert.json"
 cp "$SIGNING_CERT.sig" "$here/$channel/signing-cert.json.sig"
 
-echo "published $channel/$version -- upload $rootfs $rootfs_ht $kc $kc_sig $amd_firmware $amd_firmware_hash $nvidia_firmware $nvidia_firmware_hash${loader:+ $loader $loader_sig} to the '$version' GitHub Release, then commit+push"
+echo "published $channel/$version -- upload $rootfs $rootfs_ht $kc $kc_sig $amd_firmware $amd_firmware_hash $nvidia_firmware $nvidia_firmware_hash${loader:+ $loader $loader_sig}${recovery:+ $recovery $recovery_sig} to the '$version' GitHub Release, then commit+push"
