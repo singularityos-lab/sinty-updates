@@ -9,6 +9,7 @@ const ALLOWED_ASSETS = new Set([
   "firmware-active-amd.hash",
   "firmware-active-nvidia.img",
   "firmware-active-nvidia.hash",
+  "six-active.erofs",
 ]);
 
 const FORWARDED_RESPONSE_HEADERS = [
