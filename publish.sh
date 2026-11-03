@@ -85,6 +85,13 @@ fi
     --bundle "name=amd,img=$amd_firmware,url=$base/$(basename "$amd_firmware"),verity=$amd_firmware_verity,hashtree=$amd_firmware_hash,hashtree-url=$base/$(basename "$amd_firmware_hash"),version=1,chips=amd" \
     --bundle "name=nvidia,img=$nvidia_firmware,url=$base/$(basename "$nvidia_firmware"),verity=$nvidia_firmware_verity,hashtree=$nvidia_firmware_hash,hashtree-url=$base/$(basename "$nvidia_firmware_hash"),version=1,chips=nvidia" \
     --out "$here/$channel/manifest.json" )
+# MANIFEST_EXTENSIONS names a JSON object stored as "extensions" before signing: the
+# updater ignores it, components that trust the verified manifest read their part.
+if [ -n "${MANIFEST_EXTENSIONS:-}" ]; then
+    jq --slurpfile ext "$MANIFEST_EXTENSIONS" '.extensions = $ext[0]' \
+        "$here/$channel/manifest.json" > "$here/$channel/manifest.json.new"
+    mv "$here/$channel/manifest.json.new" "$here/$channel/manifest.json"
+fi
 ( cd "$ATOMLOOPS" && go run ./cmd/atom-sign sign \
     --manifest "$here/$channel/manifest.json" --priv "$SIGNING_KEY" )
 
