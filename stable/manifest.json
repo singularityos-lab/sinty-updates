@@ -48,5 +48,14 @@
         "nvidia"
       ]
     }
-  ]
+  ],
+  "extensions": {
+    "six": {
+      "active_url": "https://github.com/singularityos-lab/sinty-updates/releases/download/v281-six5/six-active.erofs",
+      "active_sha256": "a5c53057f76e1e4ab20a137f21429670ac498e2c82634bfb9336703aa496cd69",
+      "active_size": 1595199488,
+      "boot_url": "https://github.com/singularityos-lab/sinty-updates/releases/download/v281-six5/six-boot.tar",
+      "boot_sha256": "f874980a1b8423268583af89a7d81cc30ca537144e994ba7d3e47e4978df3c4c"
+    }
+  }
 }
