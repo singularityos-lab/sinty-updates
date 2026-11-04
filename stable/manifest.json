@@ -51,11 +51,11 @@
   ],
   "extensions": {
     "six": {
-      "active_url": "https://github.com/singularityos-lab/sinty-updates/releases/download/v282-six7/six-active.erofs",
-      "active_sha256": "176cf19f754427058f38e538edb57e531083c7781ec451674ecf8ef9451826f3",
+      "active_url": "https://github.com/singularityos-lab/sinty-updates/releases/download/v282-six8/six-active.erofs",
+      "active_sha256": "0554e624c6982244cbda211b4009ffd83033bfff19f78e33986f106937923050",
       "active_size": 1595199488,
-      "boot_url": "https://github.com/singularityos-lab/sinty-updates/releases/download/v282-six7/six-boot.tar",
-      "boot_sha256": "39a0d3942197a97970a5e930509d31ec50b349625fbf3240ccf78e2e8c74300e"
+      "boot_url": "https://github.com/singularityos-lab/sinty-updates/releases/download/v282-six8/six-boot.tar",
+      "boot_sha256": "8da3b2885db1b4c4826e8c519cf2e945e7fc0f37fc536bac66eed6df3c7aaf2c"
     }
   }
 }
