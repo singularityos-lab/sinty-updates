@@ -23,6 +23,8 @@ amd_firmware_verity="${AMD_FIRMWARE_VERITY_HASH:?set AMD_FIRMWARE_VERITY_HASH}"
 nvidia_firmware="${NVIDIA_FIRMWARE_IMG:-$firmware_dir/firmware-active-nvidia.img}"
 nvidia_firmware_hash="${NVIDIA_FIRMWARE_HASHTREE:-$firmware_dir/firmware-active-nvidia.hash}"
 nvidia_firmware_verity="${NVIDIA_FIRMWARE_VERITY_HASH:?set NVIDIA_FIRMWARE_VERITY_HASH}"
+amd_firmware_version="${AMD_FIRMWARE_VERSION:-1}"
+nvidia_firmware_version="${NVIDIA_FIRMWARE_VERSION:-1}"
 # The hash tree and the loader signature are part of the release, not extras: without
 # them a device stages an update it can never boot. Conventional names beside the
 # artifacts, overridable for odd layouts.
@@ -82,8 +84,8 @@ fi
     --rootfs-hashtree "$rootfs_ht" --rootfs-hashtree-url "$base/$(basename "$rootfs_ht")" \
     --kernelcache "$kc" --kc-url "$base/$(basename "$kc")" \
     --kc-sig "$kc_sig" --kc-sig-url "$base/$(basename "$kc_sig")" \
-    --bundle "name=amd,img=$amd_firmware,url=$base/$(basename "$amd_firmware"),verity=$amd_firmware_verity,hashtree=$amd_firmware_hash,hashtree-url=$base/$(basename "$amd_firmware_hash"),version=1,chips=amd" \
-    --bundle "name=nvidia,img=$nvidia_firmware,url=$base/$(basename "$nvidia_firmware"),verity=$nvidia_firmware_verity,hashtree=$nvidia_firmware_hash,hashtree-url=$base/$(basename "$nvidia_firmware_hash"),version=1,chips=nvidia" \
+    --bundle "name=amd,img=$amd_firmware,url=$base/$(basename "$amd_firmware"),verity=$amd_firmware_verity,hashtree=$amd_firmware_hash,hashtree-url=$base/$(basename "$amd_firmware_hash"),version=$amd_firmware_version,chips=amd" \
+    --bundle "name=nvidia,img=$nvidia_firmware,url=$base/$(basename "$nvidia_firmware"),verity=$nvidia_firmware_verity,hashtree=$nvidia_firmware_hash,hashtree-url=$base/$(basename "$nvidia_firmware_hash"),version=$nvidia_firmware_version,chips=nvidia" \
     --out "$here/$channel/manifest.json" )
 # MANIFEST_EXTENSIONS names a JSON object stored as "extensions" before signing: the
 # updater ignores it, components that trust the verified manifest read their part.
