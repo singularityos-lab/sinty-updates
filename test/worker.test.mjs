@@ -261,3 +261,23 @@ test("hides a failed release lookup", { concurrency: false }, async (t) => {
 
   assert.equal(response.status, 502);
 });
+
+test("retries GitHub rate limits before giving up", { concurrency: false }, async (t) => {
+  const calls = [];
+  replaceFetch(t, async (url) => {
+    calls.push(String(url));
+    if (calls.length === 1) {
+      return new Response("limited", { status: 429 });
+    }
+    return calls.length === 2 ? redirect() : new Response("payload", { status: 200 });
+  });
+
+  const response = await handleRequest(new Request(
+    "https://updates.sinty.dev/artifacts/v131/rootfs.erofs",
+  ));
+
+  assert.equal(calls.length, 3);
+  assert.equal(calls[0], RELEASE_URL);
+  assert.equal(calls[1], RELEASE_URL);
+  assert.equal(response.status, 200);
+});

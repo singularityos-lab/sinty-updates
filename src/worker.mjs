@@ -1,6 +1,7 @@
 const RELEASE_BASE = "https://github.com/singularityos-lab/sinty-updates/releases/download";
 const API_BASE = "https://api.github.com/repos/singularityos-lab/sinty-updates";
 const ASSET_ID_TTL = 300;
+const UPSTREAM_ATTEMPTS = 3;
 
 const ALLOWED_ASSETS = new Set([
   "rootfs.erofs",
@@ -102,7 +103,7 @@ async function assetID(artifact, token) {
     return Number(await cached.text());
   }
 
-  const response = await fetch(`${API_BASE}/releases/tags/${artifact.version}`, {
+  const response = await fetchRetrying(`${API_BASE}/releases/tags/${artifact.version}`, {
     headers: apiHeaders(token, "application/vnd.github+json"),
     cache: "no-store",
   });
@@ -127,9 +128,19 @@ async function assetID(artifact, token) {
   return asset.id;
 }
 
+async function fetchRetrying(url, init) {
+  for (let attempt = 1; ; attempt += 1) {
+    const response = await fetch(url, init);
+    if ((response.status !== 429 && response.status < 500) || attempt === UPSTREAM_ATTEMPTS) {
+      return response;
+    }
+    await cancelBody(response);
+  }
+}
+
 async function fetchRelease(artifact, method, upstreamHeaders, token) {
   if (!token) {
-    return fetch(`${RELEASE_BASE}/${artifact.version}/${artifact.asset}`, {
+    return fetchRetrying(`${RELEASE_BASE}/${artifact.version}/${artifact.asset}`, {
       method,
       headers: upstreamHeaders,
       redirect: "manual",
@@ -140,7 +151,7 @@ async function fetchRelease(artifact, method, upstreamHeaders, token) {
   if (id === null) {
     return null;
   }
-  return fetch(`${API_BASE}/releases/assets/${id}`, {
+  return fetchRetrying(`${API_BASE}/releases/assets/${id}`, {
     method,
     headers: apiHeaders(token, "application/octet-stream"),
     redirect: "manual",
