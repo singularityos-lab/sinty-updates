@@ -1,4 +1,6 @@
 const RELEASE_BASE = "https://github.com/singularityos-lab/sinty-updates/releases/download";
+const API_BASE = "https://api.github.com/repos/singularityos-lab/sinty-updates";
+const ASSET_ID_TTL = 300;
 
 const ALLOWED_ASSETS = new Set([
   "rootfs.erofs",
@@ -83,7 +85,70 @@ function releaseAssetRedirect(response) {
   return url;
 }
 
-export async function handleRequest(request) {
+function apiHeaders(token, accept) {
+  return new Headers({
+    accept,
+    authorization: `Bearer ${token}`,
+    "user-agent": "sinty-updates-artifact-proxy",
+    "x-github-api-version": "2022-11-28",
+  });
+}
+
+async function assetID(artifact, token) {
+  const cache = typeof caches === "undefined" ? null : caches.default;
+  const key = new Request(`https://updates.sinty.dev/.asset-id/${artifact.version}/${artifact.asset}`);
+  const cached = cache ? await cache.match(key) : undefined;
+  if (cached) {
+    return Number(await cached.text());
+  }
+
+  const response = await fetch(`${API_BASE}/releases/tags/${artifact.version}`, {
+    headers: apiHeaders(token, "application/vnd.github+json"),
+    cache: "no-store",
+  });
+  if (response.status === 404) {
+    await cancelBody(response);
+    return null;
+  }
+  if (!response.ok) {
+    await cancelBody(response);
+    throw new Error(`release lookup returned ${response.status}`);
+  }
+  const release = await response.json();
+  const asset = (release.assets ?? []).find((entry) => entry.name === artifact.asset);
+  if (!asset || !Number.isSafeInteger(asset.id)) {
+    return null;
+  }
+  if (cache) {
+    await cache.put(key, new Response(String(asset.id), {
+      headers: { "cache-control": `max-age=${ASSET_ID_TTL}` },
+    }));
+  }
+  return asset.id;
+}
+
+async function fetchRelease(artifact, method, upstreamHeaders, token) {
+  if (!token) {
+    return fetch(`${RELEASE_BASE}/${artifact.version}/${artifact.asset}`, {
+      method,
+      headers: upstreamHeaders,
+      redirect: "manual",
+      cache: "no-store",
+    });
+  }
+  const id = await assetID(artifact, token);
+  if (id === null) {
+    return null;
+  }
+  return fetch(`${API_BASE}/releases/assets/${id}`, {
+    method,
+    headers: apiHeaders(token, "application/octet-stream"),
+    redirect: "manual",
+    cache: "no-store",
+  });
+}
+
+export async function handleRequest(request, env = {}) {
   if (request.method !== "GET" && request.method !== "HEAD") {
     return errorResponse(405, "Method not allowed", { allow: "GET, HEAD" });
   }
@@ -118,15 +183,9 @@ export async function handleRequest(request) {
     }
   }
 
-  const upstreamURL = `${RELEASE_BASE}/${artifact.version}/${artifact.asset}`;
   let releaseResponse;
   try {
-    releaseResponse = await fetch(upstreamURL, {
-      method: request.method,
-      headers: upstreamHeaders,
-      redirect: "manual",
-      cache: "no-store",
-    });
+    releaseResponse = await fetchRelease(artifact, request.method, upstreamHeaders, env.GITHUB_TOKEN);
   } catch (error) {
     console.error(JSON.stringify({
       message: "artifact fetch failed",
@@ -135,6 +194,9 @@ export async function handleRequest(request) {
       error: error instanceof Error ? error.message : String(error),
     }));
     return errorResponse(502, "Artifact origin unavailable");
+  }
+  if (!releaseResponse) {
+    return errorResponse(404, "Artifact not found");
   }
 
   const redirectURL = releaseAssetRedirect(releaseResponse);

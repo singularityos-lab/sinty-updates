@@ -23,6 +23,15 @@ The Worker route at `/artifacts/<version>/<asset>` follows the GitHub Release re
 behalf of clients that require a direct `200` response. It accepts only the fixed OTA asset
 names and streams response bodies without buffering them.
 
+With a `GITHUB_TOKEN` secret set, the Worker resolves assets through the authenticated
+GitHub API instead of anonymous downloads. A fine-grained token with read-only access to
+public repositories and no extra permissions is enough:
+
+```
+wrangler secret put GITHUB_TOKEN
+wrangler deploy
+```
+
 ```
 node --test test/worker.test.mjs
 wrangler deploy --dry-run

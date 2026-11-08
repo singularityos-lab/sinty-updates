@@ -207,3 +207,57 @@ test("proxies a versioned boot loader and its signature", async (t) => {
   }
   assert.ok(requested.some((url) => url.endsWith("/v206/atom-loader-2.efi")));
 });
+
+test("resolves the asset through the authenticated API when a token is set", { concurrency: false }, async (t) => {
+  const calls = [];
+  replaceFetch(t, async (url, options) => {
+    calls.push({ url: String(url), options });
+    if (calls.length === 1) {
+      return Response.json({ assets: [{ id: 7, name: "rootfs.erofs" }, { id: 8, name: "rootfs.hash" }] });
+    }
+    if (calls.length === 2) {
+      return redirect();
+    }
+    return new Response("payload", { status: 206, headers: { "content-range": "bytes 0-6/7" } });
+  });
+
+  const response = await handleRequest(new Request(
+    "https://updates.sinty.dev/artifacts/v131/rootfs.hash",
+    { headers: { range: "bytes=0-6" } },
+  ), { GITHUB_TOKEN: "secret" });
+
+  assert.equal(calls[0].url, "https://api.github.com/repos/singularityos-lab/sinty-updates/releases/tags/v131");
+  assert.equal(calls[1].url, "https://api.github.com/repos/singularityos-lab/sinty-updates/releases/assets/8");
+  assert.equal(calls[0].options.headers.get("authorization"), "Bearer secret");
+  assert.equal(calls[1].options.headers.get("authorization"), "Bearer secret");
+  assert.equal(calls[1].options.headers.get("accept"), "application/octet-stream");
+  assert.equal(calls[1].options.redirect, "manual");
+  assert.equal(calls[2].url, ASSET_URL);
+  assert.equal(calls[2].options.headers.get("authorization"), null);
+  assert.equal(calls[2].options.headers.get("range"), "bytes=0-6");
+  assert.equal(response.status, 206);
+  assert.equal(await response.text(), "payload");
+});
+
+test("reports a missing release asset as not found", { concurrency: false }, async (t) => {
+  const responses = [Response.json({ assets: [] }), new Response(null, { status: 404 })];
+  replaceFetch(t, async () => responses.shift());
+
+  for (const asset of ["rootfs.erofs", "rootfs.hash"]) {
+    const response = await handleRequest(new Request(
+      `https://updates.sinty.dev/artifacts/v131/${asset}`,
+    ), { GITHUB_TOKEN: "secret" });
+    assert.equal(response.status, 404);
+  }
+});
+
+test("hides a failed release lookup", { concurrency: false }, async (t) => {
+  silenceErrors(t);
+  replaceFetch(t, async () => new Response("limited", { status: 429 }));
+
+  const response = await handleRequest(new Request(
+    "https://updates.sinty.dev/artifacts/v131/rootfs.erofs",
+  ), { GITHUB_TOKEN: "secret" });
+
+  assert.equal(response.status, 502);
+});
