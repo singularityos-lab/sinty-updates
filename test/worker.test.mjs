@@ -281,3 +281,14 @@ test("retries GitHub rate limits before giving up", { concurrency: false }, asyn
   assert.equal(calls[1], RELEASE_URL);
   assert.equal(response.status, 200);
 });
+
+test("reports a release that does not exist as not found", { concurrency: false }, async (t) => {
+  replaceFetch(t, async () => new Response("Not Found", { status: 404 }));
+
+  for (const env of [{}, { GITHUB_TOKEN: "secret" }]) {
+    const response = await handleRequest(new Request(
+      "https://updates.sinty.dev/artifacts/v300/rootfs.hash",
+    ), env);
+    assert.equal(response.status, 404);
+  }
+});

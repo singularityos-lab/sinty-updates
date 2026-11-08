@@ -206,7 +206,10 @@ export async function handleRequest(request, env = {}) {
     }));
     return errorResponse(502, "Artifact origin unavailable");
   }
-  if (!releaseResponse) {
+  if (!releaseResponse || releaseResponse.status === 404) {
+    if (releaseResponse) {
+      await cancelBody(releaseResponse);
+    }
     return errorResponse(404, "Artifact not found");
   }
 
