@@ -12,7 +12,12 @@ SIGNING_CERT="${SIGNING_CERT:-$ATOMLOOPS/signing-cert-v1.json}"
 version="${1:?usage: publish.sh <version> <rootfs.erofs> <kernelcache.efi> [channel]}"
 rootfs="${2:?rootfs artifact required}"
 kc="${3:?kernelcache artifact required}"
-channel="${4:-stable}"
+arch="${ARCH:-x86_64}"
+case "$arch" in
+    x86_64) channel="${4:-stable}" ;;
+    aarch64) channel="${4:-stable/aarch64}" ;;
+    *) echo "publish.sh: unknown ARCH $arch" >&2; exit 1 ;;
+esac
 product_name="${PRODUCT_NAME:-Sinty OS Event Horizon}"
 product_version="${PRODUCT_VERSION:?set PRODUCT_VERSION to the public release number}"
 product_build="${PRODUCT_BUILD:?set PRODUCT_BUILD to the public build identifier}"
@@ -62,6 +67,11 @@ fi
 here="$(cd "$(dirname "$0")" && pwd)"
 mkdir -p "$here/$channel"
 base="${ARTIFACT_BASE:-https://updates.sinty.dev/artifacts}/$version"
+release="$version"
+if [ "$arch" != x86_64 ]; then
+    base="$base/$arch"
+    release="$version-$arch"
+fi
 
 set --
 if [ -n "$loader" ]; then
@@ -70,13 +80,13 @@ if [ -n "$loader" ]; then
         --loader-sig "$loader_sig" --loader-sig-url "$loader_base/$(basename "$loader_sig")"
 fi
 if [ -n "$recovery" ]; then
-    recovery_base="${RECOVERY_BASE:-https://github.com/singularityos-lab/sinty-updates/releases/download/$version}"
+    recovery_base="${RECOVERY_BASE:-https://github.com/singularityos-lab/sinty-updates/releases/download/$release}"
     set -- "$@" --recovery "$recovery" --recovery-url "$recovery_base/$(basename "$recovery")" \
         --recovery-sig "$recovery_sig" --recovery-sig-url "$recovery_base/$(basename "$recovery_sig")" \
         --recovery-version "$RECOVERY_VERSION"
 fi
 ( cd "$ATOMLOOPS" && go run ./cmd/atom-sign manifest "$@" \
-    --version "$version" --min-version "$min" \
+    --version "$version" --min-version "$min" --arch "$arch" \
     --product-name "$product_name" --product-version "$product_version" \
     --product-build "$product_build" \
     --rootfs "$rootfs" --rootfs-url "$base/$(basename "$rootfs")" \
@@ -101,4 +111,4 @@ fi
 cp "$SIGNING_CERT"     "$here/$channel/signing-cert.json"
 cp "$SIGNING_CERT.sig" "$here/$channel/signing-cert.json.sig"
 
-echo "published $channel/$version -- upload $rootfs $rootfs_ht $kc $kc_sig $amd_firmware $amd_firmware_hash $nvidia_firmware $nvidia_firmware_hash${loader:+ $loader $loader_sig}${recovery:+ $recovery $recovery_sig} to the '$version' GitHub Release, then commit+push"
+echo "published $channel/$version -- upload $rootfs $rootfs_ht $kc $kc_sig $amd_firmware $amd_firmware_hash $nvidia_firmware $nvidia_firmware_hash${loader:+ $loader $loader_sig}${recovery:+ $recovery $recovery_sig} to the '$release' GitHub Release, then commit+push"

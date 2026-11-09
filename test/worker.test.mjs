@@ -292,3 +292,15 @@ test("reports a release that does not exist as not found", { concurrency: false 
     assert.equal(response.status, 404);
   }
 });
+
+test("serves aarch64 artifacts from their own release", { concurrency: false }, async (t) => {
+  const calls = [];
+  replaceFetch(t, async (url) => {
+    calls.push(String(url));
+    return new Response("payload", { status: 200, headers: { "content-length": "7" } });
+  });
+  await handleRequest(new Request("https://updates.sinty.dev/artifacts/v131/aarch64/rootfs.erofs"));
+  assert.ok(calls[0].includes("/v131-aarch64/rootfs.erofs") || calls[0].includes("/tags/v131-aarch64"), calls[0]);
+  const other = await handleRequest(new Request("https://updates.sinty.dev/artifacts/v131/riscv64/rootfs.erofs"));
+  assert.equal(other.status, 404);
+});
