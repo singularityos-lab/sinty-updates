@@ -130,13 +130,25 @@ async function assetID(artifact, token) {
   return asset.id;
 }
 
+const RETRY_DELAY_MS = 200;
+
 async function fetchRetrying(url, init) {
   for (let attempt = 1; ; attempt += 1) {
-    const response = await fetch(url, init);
-    if ((response.status !== 429 && response.status < 500) || attempt === UPSTREAM_ATTEMPTS) {
-      return response;
+    let response;
+    try {
+      response = await fetch(url, init);
+    } catch (error) {
+      if (attempt === UPSTREAM_ATTEMPTS) {
+        throw error;
+      }
     }
-    await cancelBody(response);
+    if (response) {
+      if ((response.status !== 429 && response.status < 500) || attempt === UPSTREAM_ATTEMPTS) {
+        return response;
+      }
+      await cancelBody(response);
+    }
+    await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY_MS * attempt));
   }
 }
 
@@ -229,7 +241,7 @@ export async function handleRequest(request, env = {}) {
 
   let upstream;
   try {
-    upstream = await fetch(redirectURL, {
+    upstream = await fetchRetrying(redirectURL, {
       method: request.method,
       headers: upstreamHeaders,
       redirect: "manual",

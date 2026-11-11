@@ -311,3 +311,38 @@ test("serves aarch64 artifacts from their own release", { concurrency: false }, 
   const other = await handleRequest(new Request("https://updates.sinty.dev/artifacts/v131/riscv64/rootfs.erofs"));
   assert.equal(other.status, 404);
 });
+
+test("retries the release asset when its storage fails for a moment", async (t) => {
+  let assetCalls = 0;
+  replaceFetch(t, async (url) => {
+    if (String(url) === RELEASE_URL) {
+      return redirect();
+    }
+    assetCalls += 1;
+    if (assetCalls === 1) {
+      return new Response("busy", { status: 503 });
+    }
+    return new Response("data", { status: 200 });
+  });
+  const response = await handleRequest(new Request("https://updates.sinty.dev/artifacts/v131/rootfs.erofs"), {});
+  assert.equal(response.status, 200);
+  assert.equal(await response.text(), "data");
+  assert.equal(assetCalls, 2);
+});
+
+test("retries the release lookup after a network error", async (t) => {
+  let releaseCalls = 0;
+  replaceFetch(t, async (url) => {
+    if (String(url) === RELEASE_URL) {
+      releaseCalls += 1;
+      if (releaseCalls === 1) {
+        throw new TypeError("network connection lost");
+      }
+      return redirect();
+    }
+    return new Response("data", { status: 200 });
+  });
+  const response = await handleRequest(new Request("https://updates.sinty.dev/artifacts/v131/rootfs.erofs"), {});
+  assert.equal(response.status, 200);
+  assert.equal(releaseCalls, 2);
+});
