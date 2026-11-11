@@ -85,6 +85,16 @@ if [ -n "$recovery" ]; then
         --recovery-sig "$recovery_sig" --recovery-sig-url "$recovery_base/$(basename "$recovery_sig")" \
         --recovery-version "$RECOVERY_VERSION"
 fi
+families=""
+for fkc in "$(dirname "$kc")"/kernelcache.*.efi; do
+    [ -f "$fkc" ] || continue
+    name="${fkc##*/kernelcache.}"
+    name="${name%.efi}"
+    case "$name" in *.*|"") continue ;; esac
+    [ -f "$fkc.sig" ] || { echo "publish: missing signature for $fkc" >&2; exit 1; }
+    set -- "$@" --kernel-family "name=$name,kc=$fkc,url=$base/$(basename "$fkc"),sig=$fkc.sig,sig-url=$base/$(basename "$fkc").sig"
+    families="$families $fkc $fkc.sig"
+done
 ( cd "$ATOMLOOPS" && go run ./cmd/atom-sign manifest "$@" \
     --version "$version" --min-version "$min" --arch "$arch" \
     --product-name "$product_name" --product-version "$product_version" \
@@ -111,4 +121,4 @@ fi
 cp "$SIGNING_CERT"     "$here/$channel/signing-cert.json"
 cp "$SIGNING_CERT.sig" "$here/$channel/signing-cert.json.sig"
 
-echo "published $channel/$version -- upload $rootfs $rootfs_ht $kc $kc_sig $amd_firmware $amd_firmware_hash $nvidia_firmware $nvidia_firmware_hash${loader:+ $loader $loader_sig}${recovery:+ $recovery $recovery_sig} to the '$release' GitHub Release, then commit+push"
+echo "published $channel/$version -- upload $rootfs $rootfs_ht $kc $kc_sig $amd_firmware $amd_firmware_hash $nvidia_firmware $nvidia_firmware_hash$families${loader:+ $loader $loader_sig}${recovery:+ $recovery $recovery_sig} to the '$release' GitHub Release, then commit+push"

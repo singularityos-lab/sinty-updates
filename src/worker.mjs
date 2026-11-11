@@ -26,10 +26,12 @@ const FORWARDED_RESPONSE_HEADERS = [
 ];
 
 const LOADER_ASSET = /^atom-loader-[1-9][0-9]*\.efi(\.sig)?$/;
+const FAMILY_KERNEL_ASSET = /^kernelcache\.[a-z0-9]+\.efi(\.sig)?$/;
 
 function artifactFromPath(pathname) {
   const match = /^\/artifacts\/(v[1-9][0-9]*)\/(?:(aarch64)\/)?([^/]+)$/.exec(pathname);
-  if (!match || !(ALLOWED_ASSETS.has(match[3]) || LOADER_ASSET.test(match[3]))) {
+  if (!match || !(ALLOWED_ASSETS.has(match[3]) || LOADER_ASSET.test(match[3])
+    || (match[2] && FAMILY_KERNEL_ASSET.test(match[3])))) {
     return null;
   }
   return { version: match[2] ? `${match[1]}-${match[2]}` : match[1], asset: match[3] };

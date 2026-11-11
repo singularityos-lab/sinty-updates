@@ -42,6 +42,10 @@ test("rejects unknown paths, assets, versions, and query parameters", async () =
     ["/artifacts/v131/unknown.img", 404],
     ["/artifacts/v131/atom-loader-x.efi", 404],
     ["/artifacts/v131/atom-loader-0.efi", 404],
+    ["/artifacts/v131/kernelcache.l4t.efi", 404],
+    ["/artifacts/v131/aarch64/kernelcache.L4T.efi", 404],
+    ["/artifacts/v131/aarch64/kernelcache..efi", 404],
+    ["/artifacts/v131/aarch64/kernelcache.l4t.efi.bak", 404],
     ["/artifacts/latest/rootfs.erofs", 404],
     ["/artifacts/v131/rootfs.erofs?source=other", 400],
   ];
@@ -301,6 +305,9 @@ test("serves aarch64 artifacts from their own release", { concurrency: false }, 
   });
   await handleRequest(new Request("https://updates.sinty.dev/artifacts/v131/aarch64/rootfs.erofs"));
   assert.ok(calls[0].includes("/v131-aarch64/rootfs.erofs") || calls[0].includes("/tags/v131-aarch64"), calls[0]);
+  const family = await handleRequest(new Request("https://updates.sinty.dev/artifacts/v131/aarch64/kernelcache.l4t.efi.sig"));
+  assert.notEqual(family.status, 404);
+  assert.ok(calls.some((c) => c.includes("kernelcache.l4t.efi.sig")), calls.join(" "));
   const other = await handleRequest(new Request("https://updates.sinty.dev/artifacts/v131/riscv64/rootfs.erofs"));
   assert.equal(other.status, 404);
 });
