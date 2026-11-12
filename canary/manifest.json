@@ -1,0 +1,53 @@
+{
+  "version": "v314",
+  "min_version": "v314",
+  "arch": "x86_64",
+  "product_name": "Sinty OS Event Horizon",
+  "product_version": "26",
+  "product_build": "26A146",
+  "rootfs_url": "https://updates.sinty.dev/artifacts/v314/rootfs.erofs",
+  "rootfs_hash": "89d28990da4e0bc8b0d5557a04e1d36ea505fb89bb5e09b86f9ab23d71b67316",
+  "rootfs_verity_hash": "1b312ba4607348e6c688a97ab0417b8c64f9e589d9309eb3c68c32f72dde57e7",
+  "rootfs_hashtree_url": "https://updates.sinty.dev/artifacts/v314/rootfs.hash",
+  "rootfs_hashtree_hash": "2ffe6eb8ce80915ed7ef6fa2af36f4cc705eeb3c128ea8ae635bed55f888f21a",
+  "kernelcache_url": "https://updates.sinty.dev/artifacts/v314/kernelcache.efi",
+  "kernelcache_hash": "9914b43db6ceb869249148a3840724b268b92b7a0a8f105c6465fad9e0cfd2fe",
+  "kernelcache_sig_url": "https://updates.sinty.dev/artifacts/v314/kernelcache.efi.sig",
+  "kernelcache_sig_hash": "4778f1c9ce68b3bdedc174f1f68d1d4dc92edae042aeebee71aa5fab89b46fe9",
+  "loader_version": 4,
+  "loader_url": "https://updates.sinty.dev/loader/atom-loader-4.efi",
+  "loader_hash": "10aee78f15c54039ad24097b9c857e50e7a255bbaaf17f07d1c24457b8604c6d",
+  "loader_sig_url": "https://updates.sinty.dev/loader/atom-loader-4.efi.sig",
+  "loader_sig_hash": "c14c152be3b650e67750b93ad504580f0db51194ffe5cdb9e04ca0f9bdb14ba7",
+  "recovery_version": 4,
+  "recovery_url": "https://github.com/singularityos-lab/sinty-updates/releases/download/v314/kernelcache-recovery.efi",
+  "recovery_hash": "b48c9fe39587d37d53b02821a35e62cf2304d5ebc9ad41a873e4cc66ae6f313f",
+  "recovery_sig_url": "https://github.com/singularityos-lab/sinty-updates/releases/download/v314/kernelcache-recovery.efi.sig",
+  "recovery_sig_hash": "c330f5c3ea5c5f345dc68c328409759c1e3f6a23d37e3071b88fe3eec45eb0f8",
+  "firmware_bundles": [
+    {
+      "name": "amd",
+      "url": "https://updates.sinty.dev/artifacts/v314/firmware-active-amd.img",
+      "hash": "cd9037cc55b641e65bd6eaabe1fa6db18bab4b64b90bfb6a3fe885ba0d93bcc5",
+      "verity_hash": "47bffac11348a8748f5f3c777600e0ac6fc635ca84a242ea77fa957511633586",
+      "hashtree_url": "https://updates.sinty.dev/artifacts/v314/firmware-active-amd.hash",
+      "hashtree_hash": "48e92eaf8022c4f8d9e0cf954e664df6917cf6283427f8b9c2d97674b2e7d821",
+      "version": 2,
+      "chips": [
+        "amd"
+      ]
+    },
+    {
+      "name": "nvidia",
+      "url": "https://updates.sinty.dev/artifacts/v314/firmware-active-nvidia.img",
+      "hash": "b221332cd7a231584883767a7f74303dc8aade5d23cdc42862b1b592b05a644c",
+      "verity_hash": "a694090ce1d102252182702d2acbf7027805e8d9bffd47d17eac1bd4fce65271",
+      "hashtree_url": "https://updates.sinty.dev/artifacts/v314/firmware-active-nvidia.hash",
+      "hashtree_hash": "a37a8e942a214be7fad438fed104961c7c5816c3d066bfe010aecd2cff9d4bd9",
+      "version": 2,
+      "chips": [
+        "nvidia"
+      ]
+    }
+  ]
+}
