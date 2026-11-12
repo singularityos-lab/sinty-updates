@@ -95,6 +95,12 @@ for fkc in "$(dirname "$kc")"/kernelcache.*.efi; do
     set -- "$@" --kernel-family "name=$name,kc=$fkc,url=$base/$(basename "$fkc"),sig=$fkc.sig,sig-url=$base/$(basename "$fkc").sig"
     families="$families $fkc $fkc.sig"
 done
+if [ -n "${KERNEL_RELEASE:-}" ]; then
+    set -- "$@" --kernel-release "$KERNEL_RELEASE"
+fi
+if [ -n "${APPLY_CLASS:-}" ]; then
+    set -- "$@" --apply-class "$APPLY_CLASS" --live-from "${LIVE_FROM:?set LIVE_FROM with APPLY_CLASS}"
+fi
 ( cd "$ATOMLOOPS" && go run ./cmd/atom-sign manifest "$@" \
     --version "$version" --min-version "$min" --arch "$arch" \
     --product-name "$product_name" --product-version "$product_version" \
