@@ -1,0 +1,63 @@
+{
+  "version": "v322",
+  "min_version": "v322",
+  "arch": "aarch64",
+  "product_name": "Sinty OS Event Horizon",
+  "product_version": "26",
+  "product_build": "26A154",
+  "rootfs_url": "https://updates.sinty.dev/artifacts/v322/aarch64/rootfs.erofs",
+  "rootfs_hash": "2f6386f34b272a7df31416179d55838c0c59944c6ed10ad3ecfd305a03470b92",
+  "rootfs_verity_hash": "a3da6d2c28bd82fb9221a7dcc1909f696ea48e87140701f0b68d3619ab6027a7",
+  "rootfs_hashtree_url": "https://updates.sinty.dev/artifacts/v322/aarch64/rootfs.hash",
+  "rootfs_hashtree_hash": "b39bea1695d9c2bb11f38b21abb310ea0682f6dbd9438c819c3513da0fc877d8",
+  "kernelcache_url": "https://updates.sinty.dev/artifacts/v322/aarch64/kernelcache.efi",
+  "kernelcache_hash": "6306b7405adcad427785103f680b94e53ca1b5ac875c9aabdaa1447cb9f41372",
+  "kernelcache_sig_url": "https://updates.sinty.dev/artifacts/v322/aarch64/kernelcache.efi.sig",
+  "kernelcache_sig_hash": "43d269a3564e1a9b6b3e0915cfee6b5d8e77f6aa6eeda7b953ca83de655b11c4",
+  "kernel_release": "7.2.11",
+  "kernel_families": [
+    {
+      "name": "l4t",
+      "url": "https://updates.sinty.dev/artifacts/v322/aarch64/kernelcache.l4t.efi",
+      "hash": "132880a4c91955f3d82191c16043a9e52b06bf7c7cc16a9b48afc3d52a958d0c",
+      "sig_url": "https://updates.sinty.dev/artifacts/v322/aarch64/kernelcache.l4t.efi.sig",
+      "sig_hash": "bcfee73e66a0b7d7aa6f24b2bb091bd91dafbb615184b8502b46d6299ec9f413"
+    }
+  ],
+  "loader_version": 4,
+  "loader_url": "https://updates.sinty.dev/loader/atom-loader-4.efi",
+  "loader_hash": "10aee78f15c54039ad24097b9c857e50e7a255bbaaf17f07d1c24457b8604c6d",
+  "loader_sig_url": "https://updates.sinty.dev/loader/atom-loader-4.efi.sig",
+  "loader_sig_hash": "c14c152be3b650e67750b93ad504580f0db51194ffe5cdb9e04ca0f9bdb14ba7",
+  "recovery_version": 4,
+  "recovery_url": "https://github.com/singularityos-lab/sinty-updates/releases/download/v322-aarch64/kernelcache-recovery.efi",
+  "recovery_hash": "c27155bfd152981f48b85fb15b1e6dd909062fca32b8c674f7192e78a1b2cf6e",
+  "recovery_sig_url": "https://github.com/singularityos-lab/sinty-updates/releases/download/v322-aarch64/kernelcache-recovery.efi.sig",
+  "recovery_sig_hash": "908685e35c01c8acef184fe29ed1696b49405385013773291bea3636687f6087",
+  "firmware_bundles": [
+    {
+      "name": "amd",
+      "url": "https://updates.sinty.dev/artifacts/v322/aarch64/firmware-active-amd.img",
+      "hash": "cd9037cc55b641e65bd6eaabe1fa6db18bab4b64b90bfb6a3fe885ba0d93bcc5",
+      "verity_hash": "47bffac11348a8748f5f3c777600e0ac6fc635ca84a242ea77fa957511633586",
+      "hashtree_url": "https://updates.sinty.dev/artifacts/v322/aarch64/firmware-active-amd.hash",
+      "hashtree_hash": "48e92eaf8022c4f8d9e0cf954e664df6917cf6283427f8b9c2d97674b2e7d821",
+      "version": 2,
+      "chips": [
+        "amd"
+      ]
+    },
+    {
+      "name": "nvidia",
+      "url": "https://updates.sinty.dev/artifacts/v322/aarch64/firmware-active-nvidia.img",
+      "hash": "b221332cd7a231584883767a7f74303dc8aade5d23cdc42862b1b592b05a644c",
+      "verity_hash": "a694090ce1d102252182702d2acbf7027805e8d9bffd47d17eac1bd4fce65271",
+      "hashtree_url": "https://updates.sinty.dev/artifacts/v322/aarch64/firmware-active-nvidia.hash",
+      "hashtree_hash": "a37a8e942a214be7fad438fed104961c7c5816c3d066bfe010aecd2cff9d4bd9",
+      "version": 2,
+      "chips": [
+        "nvidia"
+      ]
+    }
+  ]
+}
